@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"github.com/gin-gonic/gin"
 
 	"photo-gallery-go/internal/photo"
@@ -30,7 +31,16 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	host, exists := os.LookupEnv("GALLERY_HOST")
+	if !exists {
+		host = "0.0.0.0"
+	}
+
+	port, exists := os.LookupEnv("GALLERY_PORT")
+	if !exists {
+		port = "8080"
+	}
+
 	router := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
-	router.Run(":8080")
+	router.Run(host + ":" + port)
 }
