@@ -10,9 +10,10 @@ import (
 
 	"photo-gallery-go/internal/likes"
 	"photo-gallery-go/internal/photo"
+	"photo-gallery-go/internal/query"
 )
 
-func setupRouter(ps *photo.PhotoService, ls *likes.LikesService) *gin.Engine {
+func setupRouter(ps *photo.PhotoService, ls *likes.LikesService, qs *query.QueryService) *gin.Engine {
 
 	// Creates a router without any middleware by default
 	router := gin.New()
@@ -30,6 +31,7 @@ func setupRouter(ps *photo.PhotoService, ls *likes.LikesService) *gin.Engine {
 	router.GET("/photos", ps.ReadAllPhotos)
 	router.POST("/likes", ls.AddLikes)
 	router.GET("/likes", ls.ReadAllLikes)
+	router.GET("/query/:category", qs.ReadCategoryOrderedByLikes)
 
 	return router
 }
@@ -71,6 +73,7 @@ func main() {
 	dbConnection := fmt.Sprintf("host=%s port=%s sslmode=%s dbname=%s user=%s", dbHost, dbPort, dbSsl, dbName, dbUser)
 	dbConnectionFull := fmt.Sprintf("%s password=%s", dbConnection, dbPassword)
 
+	// Open database connection
 	db, err := gorm.Open("postgres", dbConnectionFull)
 
 	if err == nil {
@@ -81,9 +84,13 @@ func main() {
 		db.LogMode(true)
 		db.SetLogger(log.New(os.Stdout, "\r\n", 0))
 
+		// Create services
 		ps := photo.NewPhotoService(db)
 		ls := likes.NewLikesService(db)
-		router := setupRouter(ps, ls)
+		qs := query.NewQueryService(db)
+
+		// Connect services to the API
+		router := setupRouter(ps, ls, qs)
 		router.Run(host + ":" + port)
 	} else {
 		log.Printf("Cannot connect to the database %s", dbConnection)

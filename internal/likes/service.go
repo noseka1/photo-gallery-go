@@ -33,6 +33,7 @@ func (ls *LikesService) AddLikes(c *gin.Context) {
 
 		err := tx.Error
 
+		// Insert or Update the likes
 		if err == nil {
 			if foundErr := tx.First(&savedItem, item.Id).Error; foundErr != nil {
 				if gorm.IsRecordNotFoundError(foundErr) {
