@@ -31,7 +31,7 @@ func setupRouter(ps *photo.PhotoService, ls *likes.LikesService, qs *query.Query
 	router.GET("/photos", ps.ReadAllPhotos)
 	router.POST("/likes", ls.AddLikes)
 	router.GET("/likes", ls.ReadAllLikes)
-	router.GET("/query/:category", qs.ReadCategoryOrderedByLikes)
+	router.GET("/query", qs.ReadCategoryOrderedByLikes)
 
 	return router
 }
