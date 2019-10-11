@@ -1,21 +1,11 @@
 package likes
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 )
-
-type likesItem struct {
-	Id    int `json:"id" binding:"required"`
-	Likes int `json:"likes" binding:"required"`
-}
-
-func (p likesItem) String() string {
-	return fmt.Sprintf("[id=%d likes=%d]", p.Id, p.Likes)
-}
 
 type LikesService struct {
 	db *gorm.DB
