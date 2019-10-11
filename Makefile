@@ -15,3 +15,6 @@ production:
 start:
 	go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
 	./bin/$(PROJECTNAME)
+
+clean:
+	rm -f ./bin/${PROJECTNAME}
