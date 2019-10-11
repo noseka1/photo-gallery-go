@@ -2,13 +2,14 @@ package likes
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
-	"github.com/gin-gonic/gin"
 )
 
 type likesItem struct {
-	Id int `json:"id" binding:"required"`
+	Id    int `json:"id" binding:"required"`
 	Likes int `json:"likes" binding:"required"`
 }
 
@@ -16,28 +17,71 @@ func (p likesItem) String() string {
 	return fmt.Sprintf("[id=%d likes=%d]", p.Id, p.Likes)
 }
 
-var likesDb = make(map[int]likesItem)
+type LikesService struct {
+	db *gorm.DB
+}
 
-func AddLikes(c *gin.Context) {
+func NewLikesService(db *gorm.DB) *LikesService {
+	table := &likesItem{}
+	db.DropTableIfExists(table)
+	db.CreateTable(table)
+	return &LikesService{db}
+}
 
-	var json likesItem
+func (ls *LikesService) AddLikes(c *gin.Context) {
 
-	if c.Bind(&json) == nil {
-		item, found := likesDb[json.Id]
-		if found {
-			item.Likes += json.Likes
-		} else {
-			item = json
+	var item likesItem
+	var savedItem likesItem
+
+	if c.Bind(&item) == nil {
+		tx := ls.db.Begin()
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+			}
+		}()
+
+		err := tx.Error
+
+		if err == nil {
+			if foundErr := tx.First(&savedItem, item.Id).Error; foundErr != nil {
+				if gorm.IsRecordNotFoundError(foundErr) {
+					if err := ls.db.Create(&item).Error; err == nil {
+						err = tx.Commit().Error
+						savedItem = item
+					}
+				} else {
+					err = foundErr
+				}
+			} else {
+				savedItem.Likes += item.Likes
+				if err := tx.Save(&savedItem).Error; err == nil {
+					err = tx.Commit().Error
+				}
+			}
 		}
-		likesDb[item.Id] = item
-		log.Printf("Updated in data store %s", item)
-		c.Header("Content-Type", "application/json")
-		c.Status(http.StatusOK)
+
+		if err == nil {
+			log.Printf("Updated in data store %s", savedItem)
+			c.Header("Content-Type", "application/json")
+			c.Status(http.StatusOK)
+		} else {
+			log.Printf("Failed to update likes. %s", err)
+			tx.Rollback()
+			c.Status(500)
+		}
 	}
 }
 
-func ReadAllLikes(c *gin.Context) {
+func (ps *LikesService) ReadAllLikes(c *gin.Context) {
+	var items []likesItem
+
+	if err := ps.db.Find(&items).Error; err != nil {
+		log.Printf("Failed to retrieve all likes. %s", err)
+		c.Status(500)
+		return
+	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, likesDb)
-	log.Printf("Returned all %d items", len(likesDb))
+	c.JSON(http.StatusOK, items)
+	log.Printf("Returned all %d items", len(items))
 }

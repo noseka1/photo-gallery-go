@@ -2,15 +2,15 @@ package photo
 
 import (
 	"fmt"
-	"log"
-	"math/rand"
-	"net/http"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"log"
+	"net/http"
 )
 
 type photoItem struct {
-	Id int `json:"id"`
-	Name string `json:"name" binding:"required"`
+	Id       int    `json:"id"`
+	Name     string `json:"name" binding:"required"`
 	Category string `json:"category" binding:"required"`
 }
 
@@ -18,24 +18,43 @@ func (p photoItem) String() string {
 	return fmt.Sprintf("[id=%d name=%s, category=%s]", p.Id, p.Name, p.Category)
 }
 
-var photoDb = make(map[int]photoItem)
+type PhotoService struct {
+	db *gorm.DB
+}
 
-func CreatePhoto(c *gin.Context) {
+func NewPhotoService(db *gorm.DB) *PhotoService {
+	table := &photoItem{}
+	db.DropTableIfExists(table)
+	db.CreateTable(table)
+	return &PhotoService{db}
+}
+
+func (ps *PhotoService) CreatePhoto(c *gin.Context) {
 
 	var item photoItem
 
 	if c.Bind(&item) == nil {
-		id := rand.Intn(100)
-		item.Id = id
-		photoDb[id] = item
+		if err := ps.db.Create(&item).Error; err != nil {
+			log.Printf("Failed to create photo. %s", err)
+			c.Status(500)
+			return
+		}
 		log.Printf("Added %s into the data store", item)
 		c.Header("Content-Type", "application/json")
-		c.JSON(http.StatusOK, id)
+		c.JSON(http.StatusOK, item.Id)
 	}
 }
 
-func ReadAllPhotos(c *gin.Context) {
+func (ps *PhotoService) ReadAllPhotos(c *gin.Context) {
+
+	var items []photoItem
+
+	if err := ps.db.Find(&items).Error; err != nil {
+		log.Printf("Failed to retrieve all photos. %s", err)
+		c.Status(500)
+		return
+	}
 	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, photoDb)
-	log.Printf("Returned all %d items", len(photoDb))
+	c.JSON(http.StatusOK, items)
+	log.Printf("Returned all %d items", len(items))
 }
