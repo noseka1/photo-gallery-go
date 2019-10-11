@@ -44,8 +44,8 @@ curl -v localhost:8080/photos
 To add some likes to the photo with ID 2:
 
 ```
-curl -v -X POST -H 'Content-Type: application/json' --data '{"id":"2","likes":"5"}' localhost:8080/likes
-curl -v -X POST -H 'Content-Type: application/json' --data '{"id":"2","likes":"2"}' localhost:8080/likes
+curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":5}' localhost:8080/likes
+curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":2}' localhost:8080/likes
 
 ```
 
