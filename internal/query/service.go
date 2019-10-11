@@ -17,7 +17,7 @@ func NewQueryService(db *gorm.DB) *QueryService {
 
 func (qs *QueryService) ReadCategoryOrderedByLikes(c *gin.Context) {
 
-	category := c.Param("category")
+	category := c.Query("category")
 
 	var items []queryItem
 
