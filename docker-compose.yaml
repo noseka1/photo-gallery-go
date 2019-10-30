@@ -1,0 +1,23 @@
+version: '2.1'
+
+services:
+   gallery-go:
+    image: photo-gallery-go:latest
+    environment: 
+      - GALLERY_DB_HOST=gallery-postgres
+    ports: 
+      - "8080:8080"
+    depends_on:
+      gallery-postgres:
+        condition: service_healthy
+
+   gallery-postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=gallery
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=gallery
+    ports: 
+      - "5432:5432"
+    healthcheck:
+      test: "pg_isready -q -U gallery"

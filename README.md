@@ -30,33 +30,56 @@ After the service starts up you can test it using curl.
 To create some photos:
 
 ```
-curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Odie","category":"animals"}' localhost:8080/photos
-curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Garfield","category":"animals"}' localhost:8080/photos
-curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Empire state building","category":"buildings"}' localhost:8080/photos
+curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Odie","category":"animals"}' 127.0.0.1:8080/photos
+curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Garfield","category":"animals"}' 127.0.0.1:8080/photos
+curl -v -X POST -H 'Content-Type: application/json' --data '{"name":"Empire state building","category":"buildings"}' 127.0.0.1:8080/photos
 ```
 
 To retrieve all created photos:
 
 ```
-curl -v localhost:8080/photos
+curl -v 127.0.0.1:8080/photos
 ```
 
 To add some likes to the photo with ID 2:
 
 ```
-curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":5}' localhost:8080/likes
-curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":2}' localhost:8080/likes
+curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":5}' 127.0.0.1:8080/likes
+curl -v -X POST -H 'Content-Type: application/json' --data '{"id":2,"likes":2}' 127.0.0.1:8080/likes
 
 ```
 
 To retrieve likes received by all photos:
 
 ```
-curl -v localhost:8080/likes
+curl -v 127.0.0.1:8080/likes
 ```
 
 To retrieve all photos from a specific category ordered by the number of likes:
 
 ```
-curl localhost:8080/query?category=animals
+curl 127.0.0.1:8080/query?category=animals
+```
+
+Build Docker image (multi-stage build):
+```
+docker build -t photo-gallery-go .
+```
+
+Run using Docker Compose
+```
+docker-compose up
+```
+
+Tips:
+
+Run PostgreSQL independent (not use docker-compose):
+```
+docker run --name gallery-postgres -p 5432:5432 -e POSTGRES_USER=gallery -e POSTGRES_PASSWORD=password -e POSTGRES_DB=gallery -d postgres
+
+````
+
+Connect to PostgreSQL instance with psql:
+```
+psql postgresql://gallery:password@127.0.0.1:5432/gallery
 ```
