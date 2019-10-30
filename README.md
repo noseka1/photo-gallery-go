@@ -61,17 +61,17 @@ To retrieve all photos from a specific category ordered by the number of likes:
 curl 127.0.0.1:8080/query?category=animals
 ```
 
-Build Docker image (multi-stage build):
+## Build Docker image (multi-stage build):
 ```
 docker build -t photo-gallery-go .
 ```
 
-Run using Docker Compose
+## Run using Docker Compose
 ```
 docker-compose up
 ```
 
-Tips:
+## Tips:
 
 Run PostgreSQL independent (not use docker-compose):
 ```
