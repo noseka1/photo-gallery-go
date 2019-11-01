@@ -60,3 +60,53 @@ To retrieve all photos from a specific category ordered by the number of likes:
 ```
 curl localhost:8080/query?category=animals
 ```
+## Deploying to OpenShift
+
+Create a new project if it doesn't exist:
+
+```
+oc new-project photo-gallery-go
+```
+
+Deploy a PostgreSQL database:
+
+```
+oc new-app \
+--template postgresql-persistent \
+--param DATABASE_SERVICE_NAME=postgresql-gallery \
+--param POSTGRESQL_USER=gallery \
+--param POSTGRESQL_PASSWORD=password \
+--param POSTGRESQL_DATABASE=gallery
+```
+
+Define a binary build (this will reuse the Go artifacts that were built previously):
+
+```
+oc new-build \
+--name gallery \
+--binary \
+--strategy docker
+```
+
+Start the binary build:
+
+```
+oc start-build \
+gallery \
+--from-dir . \
+--follow
+```
+
+Deploy the application:
+
+```
+oc new-app \
+--image-stream gallery \
+--name gallery \
+--env GALLERY_DB_HOST=postgresql-gallery
+```
+
+Expose the application to the outside world:
+
+```
+oc expose svc gallery
