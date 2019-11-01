@@ -12,10 +12,9 @@ mod:
 	go mod download
 
 build:
-	go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
+	go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
 
 start:
-	go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
 	./bin/$(PROJECTNAME)
 
 build_static:
