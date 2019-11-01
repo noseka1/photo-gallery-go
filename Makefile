@@ -17,8 +17,8 @@ build:
 start:
 	./bin/$(PROJECTNAME)
 
-build_static:
-	CGO_ENABLED=0 go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
+build_static: export CGO_ENABLED=0
+build_static: build
 
 image:
 	buildah build-using-dockerfile -t $(PROJECTNAME) .
