@@ -92,7 +92,7 @@ Start the binary build:
 
 ```
 oc start-build \
-gallery \
+photo-gallery \
 --from-dir . \
 --follow
 ```
