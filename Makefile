@@ -21,5 +21,5 @@ start:
 build_static:
 	CGO_ENABLED=0 go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
 
-image: build_static
-	podman build -t $(PROJECTNAME) .
+image:
+	buildah build-using-dockerfile -t $(PROJECTNAME) .
