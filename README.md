@@ -73,7 +73,7 @@ Deploy a PostgreSQL database:
 ```
 oc new-app \
 --template postgresql-persistent \
---param DATABASE_SERVICE_NAME=postgresql-gallery \
+--param DATABASE_SERVICE_NAME=photo-gallery-db \
 --param POSTGRESQL_USER=gallery \
 --param POSTGRESQL_PASSWORD=password \
 --param POSTGRESQL_DATABASE=gallery
@@ -83,7 +83,7 @@ Define a binary build (this will reuse the Go artifacts that were built previous
 
 ```
 oc new-build \
---name gallery \
+--name photo-gallery \
 --binary \
 --strategy docker
 ```
@@ -101,12 +101,12 @@ Deploy the application:
 
 ```
 oc new-app \
---image-stream gallery \
---name gallery \
---env GALLERY_DB_HOST=postgresql-gallery
+--image-stream photo-gallery \
+--name photo-gallery \
+--env GALLERY_DB_HOST=photo-gallery-db
 ```
 
 Expose the application to the outside world:
 
 ```
-oc expose svc gallery
+oc expose svc photo-gallery
