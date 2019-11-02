@@ -1,21 +1,20 @@
-PROJECTNAME=$(shell basename "$(PWD)")
-
-GOBASE=$(shell pwd)
-GOBIN=$(GOBASE)/bin
+PROJECTNAME=photo-gallery-go
+GOBIN=./bin
+GOCMD=./cmd
 
 default: build
 
 clean:
-	rm -f ./bin/${PROJECTNAME}
+	rm -f $(GOBIN)/${PROJECTNAME}
 
 mod:
 	go mod download
 
 build:
-	go build -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
+	go build -o $(GOBIN)/$(PROJECTNAME) $(GOCMD)/$(PROJECTNAME)/main.go
 
 start:
-	./bin/$(PROJECTNAME)
+	$(GOBIN)/$(PROJECTNAME)
 
 build_static: export CGO_ENABLED=0
 build_static: build
