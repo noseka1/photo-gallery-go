@@ -110,6 +110,7 @@ Expose the application to the outside world:
 
 ```
 oc expose svc photo-gallery
+```
 
 ## OpenShift Pipelines
 
