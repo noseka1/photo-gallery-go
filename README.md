@@ -73,7 +73,7 @@ Deploy a PostgreSQL database:
 ```
 oc new-app \
 --template postgresql-persistent \
---param DATABASE_SERVICE_NAME=photo-gallery-db \
+--param DATABASE_SERVICE_NAME=postgresql \
 --param POSTGRESQL_USER=gallery \
 --param POSTGRESQL_PASSWORD=password \
 --param POSTGRESQL_DATABASE=gallery
@@ -103,10 +103,19 @@ Deploy the application:
 oc new-app \
 --image-stream photo-gallery \
 --name photo-gallery \
---env GALLERY_DB_HOST=photo-gallery-db
+--env GALLERY_DB_HOST=postgresql
 ```
 
 Expose the application to the outside world:
 
 ```
 oc expose svc photo-gallery
+
+## OpenShift Pipelines
+
+```
+tkn pipeline start photo-gallery-pipeline \
+--resource git=photo-gallery-git \
+--resource image=photo-gallery-image \
+--serviceaccount pipeline
+```
