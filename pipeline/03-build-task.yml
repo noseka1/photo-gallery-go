@@ -1,0 +1,71 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: photo-gallery-build
+spec:
+  inputs:
+    resources:
+      - name: git
+        type: git
+  outputs:
+    resources:
+      - name: image
+        type: image
+  steps:
+    - name: build-executable
+      image: registry.access.redhat.com/ubi7/go-toolset
+      workingDir: /workspace/git
+      command:
+        - /bin/bash
+        - -c
+        - |
+          make build_static
+      volumeMounts:
+        - name: bin
+          mountPath: '$(inputs.resources.git.path)/bin'
+    - name: build-container-image
+      image: quay.io/buildah/stable
+      workingDir: '$(inputs.resources.git.path)'
+      command:
+        - /bin/bash
+        - -c
+        - |
+          buildah build-using-dockerfile -t $(outputs.resources.image.url) .
+      volumeMounts:
+        - name: bin
+          mountPath: '$(inputs.resources.git.path)/bin'
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+    - name: export-image-digest
+      image: quay.io/buildah/stable
+      workingDir: '$(inputs.resources.git.path)'
+      command:
+        - /bin/bash
+        - -c
+        - |
+          buildah push $(outputs.resources.image.url) oci:/builder/home/image-outputs/image
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+    - name: push-image
+      image: quay.io/buildah/stable
+      workingDir: /workspace/git
+      command:
+        - /bin/bash
+        - -c
+        - |
+          buildah push --tls-verify=false $(outputs.resources.image.url) docker://$(outputs.resources.image.url)
+      volumeMounts:
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
+      securityContext:
+        privileged: true
+  volumes:
+    - name: bin
+      emptyDir: {}
+    - name: varlibcontainers
+      emptyDir: {}

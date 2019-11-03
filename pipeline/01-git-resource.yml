@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: photo-gallery-git
+spec:
+  type: git
+  params:
+    - name: url
+      value: https://github.com/noseka1/photo-gallery-go.git
+    - name: revision
+      value: master
