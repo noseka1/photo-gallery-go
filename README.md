@@ -115,6 +115,14 @@ oc expose svc photo-gallery
 ## OpenShift Pipelines
 
 ```
+oc create -f https://raw.githubusercontent.com/tektoncd/catalog/5d22dcb133d83b5cd94aee64084c329d39e15239/openshift-client/openshift-client-task.yaml
+```
+
+```
+oc create -f pipeline
+```
+
+```
 tkn pipeline start photo-gallery-pipeline \
 --resource git=photo-gallery-git \
 --resource image=photo-gallery-image \
