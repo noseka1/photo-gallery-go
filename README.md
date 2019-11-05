@@ -25,6 +25,8 @@ You can run this application using:
 make start
 ```
 
+## Testing the Application
+
 After the service starts up you can test it using curl.
 
 To create some photos:
@@ -79,7 +81,7 @@ oc new-app \
 --param POSTGRESQL_DATABASE=gallery
 ```
 
-Define a binary build (this will reuse the Go artifacts that were built previously):
+Define a binary build (this will reuse the Go artifacts that were you built at the beginning):
 
 ```
 oc new-build \
@@ -114,13 +116,19 @@ oc expose svc photo-gallery
 
 ## OpenShift Pipelines
 
+Install the OpenShift Client Task from the TektonCD catalog:
+
 ```
 oc create -f https://raw.githubusercontent.com/tektoncd/catalog/5d22dcb133d83b5cd94aee64084c329d39e15239/openshift-client/openshift-client-task.yaml
 ```
 
+Create the pipeline Kubernetes objects:
+
 ```
-oc create -f pipeline
+oc create -f deploy/pipeline
 ```
+
+Start the pipeline execution to build an application image from source:
 
 ```
 tkn pipeline start photo-gallery-pipeline \
