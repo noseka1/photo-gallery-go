@@ -1,0 +1,12 @@
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: photo-gallery-go-serverless
+spec:
+  template:
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/photo-gallery-go/photo-gallery
+          env:
+            - name: GALLERY_DB_HOST
+              value: postgresql

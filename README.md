@@ -136,3 +136,9 @@ tkn pipeline start photo-gallery-pipeline \
 --resource image=photo-gallery-image \
 --serviceaccount pipeline
 ```
+
+## Deploing a Serverless Function
+
+```
+oc apply -f deploy/serverless/service.yml
+```
