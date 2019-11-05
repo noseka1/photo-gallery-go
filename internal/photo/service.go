@@ -11,12 +11,7 @@ type PhotoService struct {
 	db *gorm.DB
 }
 
-func NewPhotoService(db *gorm.DB, createTables string) *PhotoService {
-	table := &photoItem{}
-	if (createTables == "true") {
-		db.DropTableIfExists(table)
-		db.CreateTable(table)
-	}
+func NewPhotoService(db *gorm.DB) *PhotoService {
 	return &PhotoService{db}
 }
 
@@ -48,4 +43,10 @@ func (ps *PhotoService) ReadAllPhotos(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, items)
 	log.Printf("Returned all %d items", len(items))
+}
+
+func (ps *PhotoService) CreateTables() {
+	table := &photoItem{}
+	ps.db.DropTableIfExists(table)
+	ps.db.CreateTable(table)
 }

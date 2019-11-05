@@ -11,12 +11,7 @@ type LikesService struct {
 	db *gorm.DB
 }
 
-func NewLikesService(db *gorm.DB, createTables string) *LikesService {
-	table := &likesItem{}
-	if createTables == "true" {
-		db.DropTableIfExists(table)
-		db.CreateTable(table)
-	}
+func NewLikesService(db *gorm.DB) *LikesService {
 	return &LikesService{db}
 }
 
@@ -77,4 +72,10 @@ func (ps *LikesService) ReadAllLikes(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, items)
 	log.Printf("Returned all %d items", len(items))
+}
+
+func (ls *LikesService) CreateTables() {
+	table := &likesItem{}
+	ls.db.DropTableIfExists(table)
+	ls.db.CreateTable(table)
 }

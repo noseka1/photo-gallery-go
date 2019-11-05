@@ -89,9 +89,15 @@ func main() {
 		db.SetLogger(log.New(os.Stdout, "\r\n", 0))
 
 		// Create services
-		ps := photo.NewPhotoService(db, dbCreateTables)
-		ls := likes.NewLikesService(db, dbCreateTables)
+		ps := photo.NewPhotoService(db)
+		ls := likes.NewLikesService(db)
 		qs := query.NewQueryService(db)
+
+        // Drop and create database tables
+        if (dbCreateTables == "true") {
+			ps.CreateTables()
+			ls.CreateTables()
+        }
 
 		// Connect services to the API
 		router := setupRouter(ps, ls, qs)
