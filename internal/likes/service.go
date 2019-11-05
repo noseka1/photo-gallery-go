@@ -11,10 +11,12 @@ type LikesService struct {
 	db *gorm.DB
 }
 
-func NewLikesService(db *gorm.DB) *LikesService {
+func NewLikesService(db *gorm.DB, createTables string) *LikesService {
 	table := &likesItem{}
-	db.DropTableIfExists(table)
-	db.CreateTable(table)
+	if createTables == "true" {
+		db.DropTableIfExists(table)
+		db.CreateTable(table)
+	}
 	return &LikesService{db}
 }
 

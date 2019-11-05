@@ -11,10 +11,12 @@ type PhotoService struct {
 	db *gorm.DB
 }
 
-func NewPhotoService(db *gorm.DB) *PhotoService {
+func NewPhotoService(db *gorm.DB, createTables string) *PhotoService {
 	table := &photoItem{}
-	db.DropTableIfExists(table)
-	db.CreateTable(table)
+	if (createTables == "true") {
+		db.DropTableIfExists(table)
+		db.CreateTable(table)
+	}
 	return &PhotoService{db}
 }
 

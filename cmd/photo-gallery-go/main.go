@@ -69,6 +69,10 @@ func main() {
 	if !exists {
 		dbPassword = "password"
 	}
+	dbCreateTables, exists := os.LookupEnv("GALLERY_DB_CREATE_TABLES")
+	if !exists {
+		dbCreateTables = "false"
+	}
 
 	dbConnection := fmt.Sprintf("host=%s port=%s sslmode=%s dbname=%s user=%s", dbHost, dbPort, dbSsl, dbName, dbUser)
 	dbConnectionFull := fmt.Sprintf("%s password=%s", dbConnection, dbPassword)
@@ -85,8 +89,8 @@ func main() {
 		db.SetLogger(log.New(os.Stdout, "\r\n", 0))
 
 		// Create services
-		ps := photo.NewPhotoService(db)
-		ls := likes.NewLikesService(db)
+		ps := photo.NewPhotoService(db, dbCreateTables)
+		ls := likes.NewLikesService(db, dbCreateTables)
 		qs := query.NewQueryService(db)
 
 		// Connect services to the API
