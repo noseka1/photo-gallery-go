@@ -15,6 +15,12 @@ func NewPhotoService(db *gorm.DB) *PhotoService {
 	return &PhotoService{db}
 }
 
+func (ps *PhotoService) CreateTables() {
+	table := &photoItem{}
+	ps.db.DropTableIfExists(table)
+	ps.db.CreateTable(table)
+}
+
 func (ps *PhotoService) CreatePhoto(c *gin.Context) {
 
 	var item photoItem
@@ -43,10 +49,4 @@ func (ps *PhotoService) ReadAllPhotos(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, items)
 	log.Printf("Returned all %d items", len(items))
-}
-
-func (ps *PhotoService) CreateTables() {
-	table := &photoItem{}
-	ps.db.DropTableIfExists(table)
-	ps.db.CreateTable(table)
 }

@@ -15,6 +15,12 @@ func NewLikesService(db *gorm.DB) *LikesService {
 	return &LikesService{db}
 }
 
+func (ls *LikesService) CreateTables() {
+	table := &likesItem{}
+	ls.db.DropTableIfExists(table)
+	ls.db.CreateTable(table)
+}
+
 func (ls *LikesService) AddLikes(c *gin.Context) {
 
 	var item likesItem
@@ -72,10 +78,4 @@ func (ps *LikesService) ReadAllLikes(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, items)
 	log.Printf("Returned all %d items", len(items))
-}
-
-func (ls *LikesService) CreateTables() {
-	table := &likesItem{}
-	ls.db.DropTableIfExists(table)
-	ls.db.CreateTable(table)
 }
