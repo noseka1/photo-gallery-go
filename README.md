@@ -137,7 +137,7 @@ tkn pipeline start photo-gallery-pipeline \
 --serviceaccount pipeline
 ```
 
-## Deploing a Serverless Function
+## Deploying as a Serverless Function
 
 ```
 oc apply -f deploy/serverless/service.yml
