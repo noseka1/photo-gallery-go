@@ -22,6 +22,7 @@ spec:
   - name: deploy
     taskRef:
       name: openshift-client
+      kind: ClusterTask
     runAfter:
       - build
     params:

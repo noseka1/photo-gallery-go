@@ -118,10 +118,6 @@ oc expose svc photo-gallery
 
 Install the OpenShift Client Task from the TektonCD catalog:
 
-```
-oc create -f https://raw.githubusercontent.com/tektoncd/catalog/5d22dcb133d83b5cd94aee64084c329d39e15239/openshift-client/openshift-client-task.yaml
-```
-
 Create the pipeline Kubernetes objects:
 
 ```
