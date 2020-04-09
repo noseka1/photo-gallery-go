@@ -121,7 +121,7 @@ Install the OpenShift Client Task from the TektonCD catalog:
 Create the pipeline Kubernetes objects:
 
 ```
-oc create -f pipelines
+oc apply --filename pipelines
 ```
 
 Start the pipeline execution to build an application image from source:
