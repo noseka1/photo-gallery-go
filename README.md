@@ -125,7 +125,7 @@ oc create -f https://raw.githubusercontent.com/tektoncd/catalog/5d22dcb133d83b5c
 Create the pipeline Kubernetes objects:
 
 ```
-oc create -f deploy/pipeline
+oc create -f pipelines
 ```
 
 Start the pipeline execution to build an application image from source:
@@ -137,8 +137,8 @@ tkn pipeline start photo-gallery-pipeline \
 --serviceaccount pipeline
 ```
 
-## Deploying as a Serverless Function
+## Deploying as a Knative Function
 
 ```
-oc apply -f deploy/serverless/service.yml
+oc apply -f deploy/knative/service.yml
 ```
