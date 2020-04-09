@@ -38,19 +38,6 @@ spec:
           mountPath: /var/lib/containers
       securityContext:
         privileged: true
-    - name: export-image-digest
-      image: quay.io/buildah/stable
-      workingDir: '$(inputs.resources.git.path)'
-      command:
-        - /bin/bash
-        - -c
-        - |
-          buildah push $(outputs.resources.image.url) oci:/builder/home/image-outputs/image
-      volumeMounts:
-        - name: varlibcontainers
-          mountPath: /var/lib/containers
-      securityContext:
-        privileged: true
     - name: push-image
       image: quay.io/buildah/stable
       workingDir: /workspace/git
