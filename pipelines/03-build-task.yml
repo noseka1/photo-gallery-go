@@ -24,7 +24,7 @@ spec:
         - name: bin
           mountPath: '$(inputs.resources.git.path)/bin'
     - name: build-container-image
-      image: quay.io/buildah/stable
+      image: quay.io/buildah/stable:v1.14.3
       workingDir: '$(inputs.resources.git.path)'
       command:
         - /bin/bash
