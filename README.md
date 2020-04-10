@@ -130,7 +130,8 @@ Start the pipeline execution to build an application image from source:
 tkn pipeline start photo-gallery-pipeline \
 --resource git=photo-gallery-git \
 --resource image=photo-gallery-image \
---serviceaccount pipeline
+--serviceaccount pipeline \
+--showlog
 ```
 
 ## Deploying as a Knative Function
